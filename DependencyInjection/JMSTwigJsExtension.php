@@ -41,6 +41,22 @@ class JMSTwigJsExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         $loader->load('filters.xml');
+        
+        if (!empty($config['filters'])) {
+            $compiler = $container->getDefinition('twig_js.compiler');
+            
+            foreach ($config['filters'] as $name => $jsFunctionName) {
+                $compiler->addMethodCall('setFilterFunction', array($name, $jsFunctionName));
+            }
+        }
+        
+        if (!empty($config['functions'])) {
+            $compiler = $container->getDefinition('twig_js.compiler');
+            
+            foreach ($config['functions'] as $name => $jsFunctionName) {
+                $compiler->addMethodCall('setJsFunction', array($name, $jsFunctionName));
+            }
+        }        
     }
 
     public function getAlias()
